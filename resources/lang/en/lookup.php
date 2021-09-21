@@ -1,0 +1,27 @@
+<?php
+
+return array (
+  'Title' => 'Lookup',
+  'Page_Title' => 'Lookup',
+  'Total' => 'Total',
+  'Parents' => 'Parents',
+  'Child' => 'Child',
+  'Parent' => 'Parent',
+  'Key' => 'Key',
+  'Name_ar' => 'Name ar',
+  'Name_en' => 'Name en',
+  'Active' => 'Active',
+  'Created_by' => 'Created by',
+  'Updated_by' => 'Updated by',
+  'Created_at' => 'Created at',
+  'Updated_at' => 'Updated at',
+  'Actions' => 'Actions',
+  'Yes' => 'Yes',
+  'No' => 'No',
+  'Edit' => 'Edit',
+  'Edit_Lookup' => 'Edit Lookup',
+  'No_Parent' => 'No Parent',
+  'Is_Active' => 'Is active',
+  'Name' => 'Name',
+  'Create' => 'Create',
+);
