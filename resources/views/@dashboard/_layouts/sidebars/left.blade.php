@@ -57,13 +57,13 @@
         <div class="collapse" id="sidebar_partials">
             <ul class="nav-second-level">
                 <li>
-                    <a href="-"><i class="fa fa-fw fa-angle-right"></i> Slider</a>
+                    <a href="{{ route('slider.index') }}"><i class="fa fa-fw fa-angle-right"></i> Slider</a>
                 </li>
                 <li>
-                    <a href="-"><i class="fa fa-fw fa-angle-right"></i> Social Accounts</a>
+                    <a href="{{ route('social.index') }}"><i class="fa fa-fw fa-angle-right"></i> Social Accounts</a>
                 </li>
                 <li>
-                    <a href="-"><i class="fa fa-fw fa-angle-right"></i> Testimonials</a>
+                    <a href="{{ route('testimonial.index') }}"><i class="fa fa-fw fa-angle-right"></i> Testimonials</a>
                 </li>
                 <li>
                     <a href="-"><i class="fa fa-fw fa-angle-right"></i> Call To Action</a>
@@ -126,21 +126,21 @@
     <li class="menu-title mt-2">Contacts</li>
 
     <li>
-        <a href="-">
+        <a href="{{ route('branch.index') }}">
             <i data-feather="calendar"></i>
             <span> Branches </span>
         </a>
     </li>
 
     <li>
-        <a href="-">
+        <a href="{{ route('message.index') }}">
             <i data-feather="calendar"></i>
             <span> Messages </span>
         </a>
     </li>
 
     <li>
-        <a href="-">
+        <a href="{{ route('quotation.index') }}">
             <i data-feather="calendar"></i>
             <span> Quotations </span>
         </a>

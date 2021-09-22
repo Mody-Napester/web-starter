@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Branch;
+use App\Models\Branch;
 use Illuminate\Http\Request;
 
 class BranchController extends Controller
@@ -14,6 +14,11 @@ class BranchController extends Controller
      */
     public function index()
     {
+        // Check Authority
+        if (!check_authority('index.branch')){
+            return redirect('/');
+        }
+
         $data['resources'] = Branch::all();
         return view('@dashboard.branch.index', $data);
     }
@@ -25,6 +30,11 @@ class BranchController extends Controller
      */
     public function create()
     {
+        // Check Authority
+        if (!check_authority('create.branch')){
+            return redirect('/');
+        }
+
         return view('@dashboard.branch.create');
     }
 
@@ -36,6 +46,11 @@ class BranchController extends Controller
      */
     public function store(Request $request)
     {
+        // Check Authority
+        if (!check_authority('create.branch')){
+            return redirect('/');
+        }
+
         // Validation
         $rules = [
             'telephone' => 'required',
@@ -43,9 +58,10 @@ class BranchController extends Controller
             'mobile' => 'required',
             'email' => 'required',
             'map_link' => 'required',
+            'is_active' => 'required',
         ];
 
-        foreach (config('vars.langs') as $lang) {
+        foreach (langs('short_name') as $lang) {
             $rules['name_' . $lang] = 'required';
             $rules['address_' . $lang] = 'required';
         }
@@ -56,7 +72,7 @@ class BranchController extends Controller
         $name = [];
         $address = [];
 
-        foreach (config('vars.langs') as $lang) {
+        foreach (langs('short_name') as $lang) {
             $name[$lang] = $request->input('name_' . $lang);
             $address[$lang] = $request->input('address_' . $lang);
         }
@@ -70,18 +86,20 @@ class BranchController extends Controller
             'email' => $request->input('email'),
             'map_link' => $request->input('map_link'),
             'is_default' => ($request->input('is_default') == 1)? 1 : 0,
+            'is_active' => ($request->is_active == 1)? 1 : 0,
+            'created_by' => auth()->user()->id,
         ]);
 
         // Return
         if($resource){
             return redirect(route('branch.index'))->with('message', [
                 'type' => 'success',
-                'text' => 'Created successfully'
+                'text' => trans('messages.Created_successfully')
             ]);
         }else{
             return back()->with('message', [
-                'type' => 'error',
-                'text' => 'Error!, Please try again.'
+                'type' => 'danger',
+                'text' => trans('messages.Error_Please_try_again')
             ]);
         }
     }
@@ -89,7 +107,7 @@ class BranchController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Branch  $branch
+     * @param  Branch  $branch
      * @return \Illuminate\Http\Response
      */
     public function show(Branch $branch)
@@ -100,11 +118,16 @@ class BranchController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Branch  $branch
+     * @param  Branch  $branch
      * @return String
      */
     public function edit(Branch $branch)
     {
+        // Check Authority
+        if (!check_authority('edit.branch')){
+            return redirect('/');
+        }
+
         $data['resource'] = $branch;
         return view('@dashboard.branch.edit', $data);
     }
@@ -113,18 +136,23 @@ class BranchController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Branch  $branch
+     * @param  Branch  $branch
      * @return String
      */
     public function update(Request $request, Branch $branch)
     {
+        // Check Authority
+        if (!check_authority('edit.branch')){
+            return redirect('/');
+        }
+
         $data['resource'] = $branch;
 
         // Return
         if(!$data['resource']){
             return redirect()->back()->with('message',[
                 'type'=>'danger',
-                'text'=>'Sorry! branch not exists.'
+                'text'=> trans('messages.Sorry_resource_not_exists.')
             ]);
         }
 
@@ -135,9 +163,10 @@ class BranchController extends Controller
             'mobile' => 'required',
             'email' => 'required',
             'map_link' => 'required',
+            'is_active' => 'required',
         ];
 
-        foreach (config('vars.langs') as $lang) {
+        foreach (langs('short_name') as $lang) {
             $rules['name_' . $lang] = 'required';
             $rules['address_' . $lang] = 'required';
         }
@@ -148,7 +177,7 @@ class BranchController extends Controller
         $name = [];
         $address = [];
 
-        foreach (config('vars.langs') as $lang) {
+        foreach (langs('short_name') as $lang) {
             $name[$lang] = $request->input('name_' . $lang);
             $address[$lang] = $request->input('address_' . $lang);
         }
@@ -162,18 +191,20 @@ class BranchController extends Controller
             'email' => $request->input('email'),
             'map_link' => $request->input('map_link'),
             'is_default' => ($request->input('is_default') == 1)? 1 : 0,
+            'is_active' => ($request->is_active == 1)? 1 : 0,
+            'updated_by' => auth()->user()->id,
         ]);
 
         // Return
         if($resource){
             return redirect(route('branch.index'))->with('message', [
                 'type' => 'success',
-                'text' => 'Updated successfully'
+                'text' => trans('messages.Updated_successfully')
             ]);
         }else{
             return back()->with('message', [
                 'type' => 'error',
-                'text' => 'Error!, Please try again.'
+                'text' => trans('messages.Error_Please_try_again')
             ]);
         }
     }
@@ -181,24 +212,30 @@ class BranchController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Branch  $branch
+     * @param  Branch  $branch
      * @return String
      */
     public function destroy(Branch $branch)
     {
+        // Check Authority
+        if (!check_authority('delete.branch')){
+            return redirect('/');
+        }
+
         $data['resource'] = $branch;
 
         if($data['resource']){
+
             $data['resource']->delete();
 
             return redirect()->back()->with('message',[
                 'type'=>'success',
-                'text'=>'Deleted Successfully.'
+                'text'=> trans('messages.Deleted_Successfully')
             ]);
         }else{
             return redirect()->back()->with('message',[
                 'type'=>'danger',
-                'text'=>'Sorry! not exists.'
+                'text'=> trans('messages.Sorry_not_exists')
             ]);
         }
     }

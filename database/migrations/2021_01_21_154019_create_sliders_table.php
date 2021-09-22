@@ -14,7 +14,8 @@ class CreateSlidersTable extends Migration
     public function up()
     {
         Schema::create('sliders', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id('id');
+            $table->uuid('uuid');
             $table->string('image');
             $table->text('text_1');
             $table->text('text_2');
@@ -23,6 +24,9 @@ class CreateSlidersTable extends Migration
             $table->string('button_1_link');
             $table->text('button_2_text');
             $table->string('button_2_link');
+            $table->boolean('is_active')->default(1);
+            $table->integer('created_by')->unsigned();
+            $table->integer('updated_by')->nullable()->unsigned();
             $table->timestamps();
         });
     }

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Testimonials;
+use App\Models\Testimonial;
 use Illuminate\Http\Request;
 
 class TestimonialController extends Controller
@@ -12,8 +12,14 @@ class TestimonialController extends Controller
      *
      * @return String
      */
-    public function index(){
-        $data['resources'] = Testimonials::orderBy('ordering', 'DESC')->get();
+    public function index()
+    {
+        // Check Authority
+        if (!check_authority('index.testimonial')){
+            return redirect('/');
+        }
+
+        $data['resources'] = Testimonial::all();
         return view('@dashboard.testimonial.index', $data);
     }
 
@@ -24,6 +30,11 @@ class TestimonialController extends Controller
      */
     public function create()
     {
+        // Check Authority
+        if (!check_authority('create.testimonial')){
+            return redirect('/');
+        }
+
         return view('@dashboard.testimonial.create');
     }
 
@@ -35,9 +46,15 @@ class TestimonialController extends Controller
      */
     public function store(Request $request)
     {
+        // Check Authority
+        if (!check_authority('create.testimonial')){
+            return redirect('/');
+        }
+
         // Validation
         $rules = [
             'image' => 'required',
+            'is_active' => 'required',
         ];
 
         foreach (langs('short_name') as $lang) {
@@ -62,37 +79,27 @@ class TestimonialController extends Controller
             $details[$lang] = $request->input('details_' . $lang);
         }
 
-        if($request->hasFile('image')){
-            $upload = upload_file('image', $request->file('image'), 'assets/images/testimonial');
-            if ($upload['status'] == true){
-                $image = $upload['filename'];
-            }else{
-                return back()->with('message',[
-                    'type'=> 'danger',
-                    'text'=> 'Image ' . $upload['message']
-                ]);
-            }
-        }
-
-        $resource = Testimonials::create([
+        $resource = Testimonial::create([
             'ordering' => $request->ordering,
             'name' => json_encode($name),
             'work' => json_encode($work),
             'title' => json_encode($title),
             'details' => json_encode($details),
-            'image' => $image,
+            'image' => $request->image,
+            'is_active' => ($request->is_active == 1)? 1 : 0,
+            'created_by' => auth()->user()->id,
         ]);
 
         // Return
         if($resource){
             return redirect(route('testimonial.index'))->with('message', [
                 'type' => 'success',
-                'text' => 'Created successfully'
+                'text' => trans('messages.Created_successfully')
             ]);
         }else{
             return back()->with('message', [
-                'type' => 'error',
-                'text' => 'Error!, Please try again.'
+                'type' => 'danger',
+                'text' => trans('messages.Error_Please_try_again')
             ]);
         }
     }
@@ -100,10 +107,10 @@ class TestimonialController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Testimonials  $testimonial
+     * @param  \App\Testimonial  $testimonial
      * @return \Illuminate\Http\Response
      */
-    public function show(Testimonials $testimonial)
+    public function show(Testimonial $testimonial)
     {
         //
     }
@@ -111,12 +118,16 @@ class TestimonialController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Testimonials  $testimonial
+     * @param  \App\Testimonial  $testimonial
      * @return String
      */
-    public function edit(Testimonials $testimonial)
+    public function edit(Testimonial $testimonial)
     {
-//        $data['resource'] = Testimonials::where('id', $testimonial)->first();
+        // Check Authority
+        if (!check_authority('edit.testimonial')){
+            return redirect('/');
+        }
+
         $data['resource'] = $testimonial;
         return view('@dashboard.testimonial.edit', $data);
     }
@@ -125,24 +136,30 @@ class TestimonialController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Testimonials  $testimonial
+     * @param  \App\Testimonial  $testimonial
      * @return String
      */
-    public function update(Request $request, Testimonials $testimonial)
+    public function update(Request $request, Testimonial $testimonial)
     {
+        // Check Authority
+        if (!check_authority('edit.testimonial')){
+            return redirect('/');
+        }
+
         $data['resource'] = $testimonial;
 
         // Return
         if(!$data['resource']){
             return redirect()->back()->with('message',[
                 'type'=>'danger',
-                'text'=>'Sorry! page not exists.'
+                'text'=> trans('messages.Sorry_resource_not_exists.')
             ]);
         }
 
         // Validation
         $rules = [
-//            'image' => 'required',
+            'image' => 'required',
+            'is_active' => 'required',
         ];
 
         foreach (langs('short_name') as $lang) {
@@ -167,37 +184,27 @@ class TestimonialController extends Controller
             $details[$lang] = $request->input('details_' . $lang);
         }
 
-        if($request->hasFile('image')){
-            $upload = upload_file('image', $request->file('image'), 'assets/images/testimonial');
-            if ($upload['status'] == true){
-                $image = $upload['filename'];
-            }else{
-                return back()->with('message',[
-                    'type'=> 'danger',
-                    'text'=> 'Image ' . $upload['message']
-                ]);
-            }
-        }
-
         $resource = $data['resource']->update([
             'ordering' => $request->ordering,
             'name' => json_encode($name),
             'work' => json_encode($work),
             'title' => json_encode($title),
             'details' => json_encode($details),
-            'image' => (isset($image)? $image : $data['resource']->image),
+            'image' => $request->image,
+            'is_active' => ($request->is_active == 1)? 1 : 0,
+            'updated_by' => auth()->user()->id,
         ]);
 
         // Return
         if($resource){
             return redirect(route('testimonial.index'))->with('message', [
                 'type' => 'success',
-                'text' => 'Updated successfully'
+                'text' => trans('messages.Updated_successfully')
             ]);
         }else{
             return back()->with('message', [
                 'type' => 'error',
-                'text' => 'Error!, Please try again.'
+                'text' => trans('messages.Error_Please_try_again')
             ]);
         }
     }
@@ -205,25 +212,28 @@ class TestimonialController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Testimonials  $testimonial
+     * @param  \App\Testimonial  $testimonial
      * @return String
      */
-    public function destroy(Testimonials $testimonial)
+    public function destroy(Testimonial $testimonial)
     {
+        // Check Authority
+        if (!check_authority('delete.testimonial')){
+            return redirect('/');
+        }
+
         $data['resource'] = $testimonial;
 
         if($data['resource']){
-
             $data['resource']->delete();
-
             return redirect()->back()->with('message',[
                 'type'=>'success',
-                'text'=>'Deleted Successfully.'
+                'text'=> trans('messages.Deleted_Successfully')
             ]);
         }else{
             return redirect()->back()->with('message',[
                 'type'=>'danger',
-                'text'=>'Sorry! not exists.'
+                'text'=> trans('messages.Sorry_not_exists')
             ]);
         }
     }

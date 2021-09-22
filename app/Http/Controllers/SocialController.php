@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Provider;
-use App\Social;
+use App\Models\Social;
 use Illuminate\Http\Request;
 
 class SocialController extends Controller
@@ -13,7 +12,13 @@ class SocialController extends Controller
      *
      * @return String
      */
-    public function index(){
+    public function index()
+    {
+        // Check Authority
+        if (!check_authority('index.social')){
+            return redirect('/');
+        }
+
         $data['resources'] = Social::all();
         return view('@dashboard.social.index', $data);
     }
@@ -25,7 +30,12 @@ class SocialController extends Controller
      */
     public function create()
     {
-        $data['providers'] = Provider::all();
+        // Check Authority
+        if (!check_authority('create.social')){
+            return redirect('/');
+        }
+
+        $data['providers'] = lookups('providers');
         return view('@dashboard.social.create', $data);
     }
 
@@ -37,31 +47,39 @@ class SocialController extends Controller
      */
     public function store(Request $request)
     {
+        // Check Authority
+        if (!check_authority('create.social')){
+            return redirect('/');
+        }
+
         // Validation
         $rules = [
-            'provider_id' => 'required',
+            'lookup_provider_id' => 'required',
             'name' => 'required',
             'link' => 'required',
+            'is_active' => 'required',
         ];
 
         $request->validate($rules);
 
         $resource = Social::create([
-            'provider_id' => $request->provider_id,
+            'lookup_provider_id' => $request->lookup_provider_id,
             'name' => $request->name,
             'link' => $request->link,
+            'is_active' => ($request->is_active == 1)? 1 : 0,
+            'created_by' => auth()->user()->id,
         ]);
 
         // Return
         if($resource){
             return redirect(route('social.index'))->with('message', [
                 'type' => 'success',
-                'text' => 'Created successfully'
+                'text' => trans('messages.Created_successfully')
             ]);
         }else{
             return back()->with('message', [
-                'type' => 'error',
-                'text' => 'Error!, Please try again.'
+                'type' => 'danger',
+                'text' => trans('messages.Error_Please_try_again')
             ]);
         }
     }
@@ -85,8 +103,13 @@ class SocialController extends Controller
      */
     public function edit(Social $social)
     {
+        // Check Authority
+        if (!check_authority('edit.social')){
+            return redirect('/');
+        }
+
         $data['resource'] = $social;
-        $data['providers'] = Provider::all();
+        $data['providers'] = lookups('providers');
         return view('@dashboard.social.edit', $data);
     }
 
@@ -99,41 +122,49 @@ class SocialController extends Controller
      */
     public function update(Request $request, Social $social)
     {
+        // Check Authority
+        if (!check_authority('edit.social')){
+            return redirect('/');
+        }
+
         $data['resource'] = $social;
 
         // Return
         if(!$data['resource']){
             return redirect()->back()->with('message',[
                 'type'=>'danger',
-                'text'=>'Sorry! page not exists.'
+                'text'=> trans('messages.Sorry_resource_not_exists.')
             ]);
         }
 
         // Validation
         $rules = [
-            'provider_id' => 'required',
+            'lookup_provider_id' => 'required',
             'name' => 'required',
             'link' => 'required',
+            'is_active' => 'required',
         ];
 
         $request->validate($rules);
 
         $resource = $data['resource']->update([
-            'provider_id' => $request->provider_id,
+            'lookup_provider_id' => $request->lookup_provider_id,
             'name' => $request->name,
             'link' => $request->link,
+            'is_active' => ($request->is_active == 1)? 1 : 0,
+            'updated_by' => auth()->user()->id,
         ]);
 
         // Return
         if($resource){
             return redirect(route('social.index'))->with('message', [
                 'type' => 'success',
-                'text' => 'Updated successfully'
+                'text' => trans('messages.Updated_successfully')
             ]);
         }else{
             return back()->with('message', [
                 'type' => 'error',
-                'text' => 'Error!, Please try again.'
+                'text' => trans('messages.Error_Please_try_again')
             ]);
         }
     }
@@ -146,6 +177,11 @@ class SocialController extends Controller
      */
     public function destroy(Social $social)
     {
+        // Check Authority
+        if (!check_authority('delete.social')){
+            return redirect('/');
+        }
+
         $data['resource'] = $social;
 
         if($data['resource']){
@@ -153,12 +189,12 @@ class SocialController extends Controller
 
             return redirect()->back()->with('message',[
                 'type'=>'success',
-                'text'=>'Deleted Successfully.'
+                'text'=> trans('messages.Deleted_Successfully')
             ]);
         }else{
             return redirect()->back()->with('message',[
                 'type'=>'danger',
-                'text'=>'Sorry! not exists.'
+                'text'=> trans('messages.Sorry_not_exists')
             ]);
         }
     }

@@ -1,149 +1,168 @@
 @extends('@dashboard._layouts.master')
 
-@section('page_title') Slider @endsection
+@section('title') {{ trans('slider.Create') }} @endsection
 
-@section('page_contents')
+@section('head')
+    <script src="{{ url('assets_dashboard/libs/ckeditor/ckeditor.js') }}"></script>
+@endsection
+
+@section('contents')
 
     <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Slider</h1>
+    <div class="page-title-box">
+        <div class="page-title-right">
+            <ol class="breadcrumb m-0">
+                <li class="breadcrumb-item"><a href="{{ route('dashboard.home.index') }}">{{ trans('home.Title') }}</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('slider.index') }}">{{ trans('slider.Page_Title') }}</a></li>
+                <li class="breadcrumb-item active">{{ trans('slider.Create') }}</li>
+            </ol>
+        </div>
+        <h4 class="page-title">{{ trans('slider.Create') }} </h4>
     </div>
 
-    <!-- Page Forms -->
-    <form action="{{ route('slider.store') }}" method="post" enctype="multipart/form-data">
-        @csrf
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Create new slider</h6>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    @foreach(config('vars.langs') as $lang)
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-col-form-label" for="text_1_{{ $lang }}">Text 1 ({{ $lang }})</label>
-                                <input class="form-control @error('text_1_'.$lang) is-invalid @enderror "
-                                       id="text_1_{{ $lang }}"
-                                       type="text" name="text_1_{{ $lang }}"
-                                       placeholder="Enter text 1 {{ $lang }} .." value="{{ old('text_1_' . $lang) }}">
+    <!-- Create -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <form action="{{ route('slider.store') }}" method="post" enctype="multipart/form-data">
+                        @csrf
 
-                                @error('text_1_'.$lang)
+                        <div class="row">
+
+                            @foreach(langs('short_name') as $lang)
+                                <div class="col-md-6 mb-3">
+                                    <label class="mb-2" for="text_1_{{ $lang }}">Text 1 ({{ $lang }})</label>
+                                    <input class="form-control @error('text_1_'.$lang) is-invalid @enderror "
+                                           id="text_1_{{ $lang }}"
+                                           type="text" name="text_1_{{ $lang }}"
+                                           placeholder="Enter text 1 {{ $lang }} .." value="{{ old('text_1_' . $lang) }}">
+
+                                    @error('text_1_'.$lang)
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            @endforeach
+
+                            @foreach(langs('short_name') as $lang)
+                                <div class="col-md-6 mb-3">
+                                    <label class="mb-2" for="text_2_{{ $lang }}">Text 2 ({{ $lang }})</label>
+                                    <input class="form-control @error('text_2_'.$lang) is-invalid @enderror "
+                                           id="text_2_{{ $lang }}"
+                                           type="text" name="text_2_{{ $lang }}"
+                                           placeholder="Enter text 2 {{ $lang }} .." value="{{ old('text_2_' . $lang) }}">
+
+                                    @error('text_2_'.$lang)
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            @endforeach
+
+                            @foreach(langs('short_name') as $lang)
+                                <div class="col-md-6 mb-3">
+                                    <label class="mb-2" for="text_3_{{ $lang }}">Text 3 ({{ $lang }})</label>
+                                    <textarea class="form-control @error('text_3_'.$lang) is-invalid @enderror "
+                                              id="text_3_{{ $lang }}" name="text_3_{{ $lang }}"
+                                              placeholder="Enter text 3 {{ $lang }} .."></textarea>
+
+                                    @error('text_3_'.$lang)
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+
+                                    <script>
+                                        CKEDITOR.replace( 'text_3_{{ $lang }}' );
+                                    </script>
+                                </div>
+                            @endforeach
+
+                            @foreach(langs('short_name') as $lang)
+                                <div class="col-md-6 mb-3">
+                                    <label class="mb-2" for="button_1_text_{{ $lang }}">Button 1 Text ({{ $lang }})</label>
+                                    <input class="form-control @error('button_1_text_'.$lang) is-invalid @enderror "
+                                           id="button_1_text_{{ $lang }}"
+                                           type="text" name="button_1_text_{{ $lang }}"
+                                           placeholder="Enter button 1 text {{ $lang }} .." value="{{ old('button_1_text_' . $lang) }}">
+
+                                    @error('button_1_text_'.$lang)
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            @endforeach
+
+                            @foreach(langs('short_name') as $lang)
+                                <div class="col-md-6 mb-3">
+                                    <label class="mb-2" for="button_2_text_{{ $lang }}">Button 2 Text ({{ $lang }})</label>
+                                    <input class="form-control @error('button_2_text_'.$lang) is-invalid @enderror "
+                                           id="button_2_text_{{ $lang }}"
+                                           type="text" name="button_2_text_{{ $lang }}"
+                                           placeholder="Enter button 2 text {{ $lang }} .." value="{{ old('button_2_text_' . $lang) }}">
+
+                                    @error('button_2_text_'.$lang)
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            @endforeach
+
+                            <div class="col-md-6 mb-3">
+                                <label class="mb-2" for="button_1_link">Button 1 link</label>
+                                <input class="form-control @error('button_1_link') is-invalid @enderror "
+                                       id="button_1_link" type="text" name="button_1_link"
+                                       placeholder="Enter button 1 link .." value="{{ old('button_1_link') }}">
+
+                                @error('button_1_link')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                        </div>
-                    @endforeach
 
-                    @foreach(config('vars.langs') as $lang)
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-col-form-label" for="text_2_{{ $lang }}">Text 2 ({{ $lang }})</label>
-                                <input class="form-control @error('text_2_'.$lang) is-invalid @enderror "
-                                       id="text_2_{{ $lang }}"
-                                       type="text" name="text_2_{{ $lang }}"
-                                       placeholder="Enter text 2 {{ $lang }} .." value="{{ old('text_2_' . $lang) }}">
+                            <div class="col-md-6 mb-3">
+                                <label class="mb-2" for="button_2_link">Button 2 link</label>
+                                <input class="form-control @error('button_2_link') is-invalid @enderror "
+                                       id="button_2_link" type="text" name="button_2_link"
+                                       placeholder="Enter button 2 link .." value="{{ old('button_2_link') }}">
 
-                                @error('text_2_'.$lang)
+                                @error('button_2_link')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                        </div>
-                    @endforeach
 
-                    @foreach(config('vars.langs') as $lang)
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-col-form-label" for="text_3_{{ $lang }}">Text 3 ({{ $lang }})</label>
-                                <textarea class="form-control @error('text_3_'.$lang) is-invalid @enderror "
-                                          id="text_3_{{ $lang }}" name="text_3_{{ $lang }}"
-                                          placeholder="Enter text 3 {{ $lang }} .."></textarea>
+                            <div class="col-md-6 mb-3">
+                                <label class="mb-2" for="image">Image</label>
+                                <input class="form-control @error('image') is-invalid @enderror" id="image" type="text" name="image" placeholder="Enter media file name ..">
 
-                                @error('text_3_'.$lang)
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-
-                                <script>
-                                    CKEDITOR.replace( 'text_3_{{ $lang }}' );
-                                </script>
-                            </div>
-                        </div>
-                    @endforeach
-
-                    @foreach(config('vars.langs') as $lang)
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-col-form-label" for="button_1_text_{{ $lang }}">Button 1 Text ({{ $lang }})</label>
-                                <input class="form-control @error('button_1_text_'.$lang) is-invalid @enderror "
-                                       id="button_1_text_{{ $lang }}"
-                                       type="text" name="button_1_text_{{ $lang }}"
-                                       placeholder="Enter button 1 text {{ $lang }} .." value="{{ old('button_1_text_' . $lang) }}">
-
-                                @error('button_1_text_'.$lang)
+                                @error('image')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                        </div>
-                    @endforeach
 
-                    @foreach(config('vars.langs') as $lang)
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-col-form-label" for="button_2_text_{{ $lang }}">Button 2 Text ({{ $lang }})</label>
-                                <input class="form-control @error('button_2_text_'.$lang) is-invalid @enderror "
-                                       id="button_2_text_{{ $lang }}"
-                                       type="text" name="button_2_text_{{ $lang }}"
-                                       placeholder="Enter button 2 text {{ $lang }} .." value="{{ old('button_2_text_' . $lang) }}">
+                            <div class="col-md-6 mb-3">
+                                <label class="mb-3" for="is_active">{{ trans('global.Is_Active') }} <span class="text-danger">*</span></label>
+                                <br>
+                                <div class="radio form-check-inline">
+                                    <input type="radio" id="is_active_1" value="1" name="is_active" checked>
+                                    <label for="is_active_1"> {{ trans('global.Yes') }} </label>
+                                </div>
 
-                                @error('button_2_text_'.$lang)
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <div class="radio form-check-inline">
+                                    <input type="radio" id="is_active_0" value="0" name="is_active">
+                                    <label for="is_active_0"> {{ trans('global.No') }} </label>
+                                </div>
+
+                                @if ($errors->has('is_active'))
+                                    <div class="invalid-feedback">{{ $errors->first('is_active') }}</div>
+                                @endif
                             </div>
+
+
                         </div>
-                    @endforeach
 
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-col-form-label" for="button_1_link">Button 1 link</label>
-                            <input class="form-control @error('button_1_link') is-invalid @enderror "
-                                   id="button_1_link" type="text" name="button_1_link"
-                                   placeholder="Enter button 1 link .." value="{{ old('button_1_link') }}">
-
-                            @error('button_1_link')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-col-form-label" for="button_2_link">Button 2 link</label>
-                            <input class="form-control @error('button_2_link') is-invalid @enderror "
-                                   id="button_2_link" type="text" name="button_2_link"
-                                   placeholder="Enter button 2 link .." value="{{ old('button_2_link') }}">
-
-                            @error('button_2_link')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label class="form-col-form-label" for="image">Image</label>
-                            <input class="form-control @error('image') is-invalid @enderror" id="image" type="file" name="image">
-
-                            @error('image')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
+                        <button type="submit" class="btn btn-primary waves-effect waves-light"><i class="fa fa-fw fa-save"></i> {{ trans('global.Save') }}</button>
+                        <button type="reset" class="btn btn-warning waves-effect waves-light"><i class="fas fa-fw fa-redo"></i> {{ trans('global.Reset') }}</button>
+                    </form>
                 </div>
-            </div>
-            <div class="card-footer">
-                <button class="btn btn-success" type="submit"><i class="fa fa-fw fa-save"></i> Save</button>
-            </div>
-        </div>
-    </form>
+            </div> <!-- end card -->
+        </div> <!-- end col -->
+
+    </div>
 
 
 @endsection

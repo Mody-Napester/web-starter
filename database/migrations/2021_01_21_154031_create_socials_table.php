@@ -14,10 +14,14 @@ class CreateSocialsTable extends Migration
     public function up()
     {
         Schema::create('socials', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('provider_id');
+            $table->id('id');
+            $table->uuid('uuid');
+            $table->integer('lookup_provider_id');
             $table->string('name');
             $table->string('link');
+            $table->boolean('is_active')->default(1);
+            $table->integer('created_by')->unsigned();
+            $table->integer('updated_by')->nullable()->unsigned();
             $table->timestamps();
         });
     }

@@ -2,6 +2,10 @@
 
 @section('title') {{ trans('page.Create') }} @endsection
 
+@section('head')
+    <script src="{{ url('assets_dashboard/libs/ckeditor/ckeditor.js') }}"></script>
+@endsection
+
 @section('contents')
 
     <!-- Page Heading -->
@@ -26,35 +30,83 @@
 
                         <div class="row">
 
-                            <div class="col-md-6 mb-3">
-                                <div class="form-group">
-                                    <label class="mb-2" for="is_active">{{ trans('page.Is_Active') }}</label>
-                                    <select class="select2 form-control {{ $errors->has('is_active') ? ' is-invalid' : '' }}" id="is_active" name="is_active">
-                                        <option value="1">{{ trans('global.Yes') }}</option>
-                                        <option value="0">{{ trans('global.No') }}</option>
-                                    </select>
-
-                                    @if ($errors->has('is_active'))
-                                        <div class="invalid-feedback">{{ $errors->first('is_active') }}</div>
-                                    @endif
-                                </div>
-                            </div>
-
-                            @foreach(langs("short_name") as $lang)
+                            @foreach(langs('short_name') as $lang)
                                 <div class="col-md-6 mb-3">
-                                    <div class="form-group">
-                                        <label class="mb-2" for="name_{{ $lang }}">{{ trans('page.Name') }} ({{ $lang }})</label>
-                                        <input class="form-control {{ $errors->has('name_'.$lang) ? ' is-invalid' : '' }}"
-                                               id="name_{{ $lang }}"
-                                               type="text" name="name_{{ $lang }}"
-                                               placeholder="Enter name_{{ $lang }} .." value="{{ old('name_' . $lang) }}">
+                                    <label class="mb-2" for="title_{{ $lang }}">Title ({{ $lang }})</label>
+                                    <input class="form-control @error('title_'.$lang) is-invalid @enderror "
+                                           id="title_{{ $lang }}"
+                                           type="text" name="title_{{ $lang }}"
+                                           placeholder="Enter title_{{ $lang }} .." value="{{ old('title_' . $lang) }}">
 
-                                        @if ($errors->has('name_'.$lang))
-                                            <div class="invalid-feedback">{{ $errors->first('name_'.$lang) }}</div>
-                                        @endif
-                                    </div>
+                                    @error('title_'.$lang)
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             @endforeach
+
+                            @foreach(langs('short_name') as $lang)
+                                <div class="col-md-6 mb-3">
+                                    <label class="mb-2" for="details_{{ $lang }}">Details ({{ $lang }})</label>
+                                    <textarea class="form-control @error('details_'.$lang) is-invalid @enderror "
+                                              id="details_{{ $lang }}" name="details_{{ $lang }}"
+                                              placeholder="Enter details_{{ $lang }} .."></textarea>
+
+                                    @error('details_'.$lang)
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+
+                                    <script>
+                                        CKEDITOR.replace('details_{{ $lang }}');
+                                    </script>
+                                </div>
+                            @endforeach
+
+                            <div class="col-md-6 mb-3">
+                                <label class="mb-2" for="banner">Banner</label>
+                                <input class="form-control @error('banner') is-invalid @enderror" id="banner" type="text" name="banner" placeholder="Enter media file name ..">
+
+                                @error('banner')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="mb-2" for="image">Image</label>
+                                <input class="form-control @error('image') is-invalid @enderror" id="image" type="text" name="image" placeholder="Enter media file name ..">
+
+                                @error('image')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="mb-2" for="ordering">Order</label>
+                                <input type="number" class="form-control" name="ordering" id="ordering" placeholder="Enter order number ..">
+
+                                @error('ordering')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="mb-3" for="is_active">{{ trans('global.Is_Active') }} <span class="text-danger">*</span></label>
+                                <br>
+                                <div class="radio form-check-inline">
+                                    <input type="radio" id="is_active_1" value="1" name="is_active" checked>
+                                    <label for="is_active_1"> {{ trans('global.Yes') }} </label>
+                                </div>
+
+                                <div class="radio form-check-inline">
+                                    <input type="radio" id="is_active_0" value="0" name="is_active">
+                                    <label for="is_active_0"> {{ trans('global.No') }} </label>
+                                </div>
+
+                                @if ($errors->has('is_active'))
+                                    <div class="invalid-feedback">{{ $errors->first('is_active') }}</div>
+                                @endif
+                            </div>
+
+
                         </div>
 
                         <button type="submit" class="btn btn-primary waves-effect waves-light"><i class="fa fa-fw fa-save"></i> {{ trans('global.Save') }}</button>

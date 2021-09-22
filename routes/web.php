@@ -6,21 +6,24 @@ use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\DashboardController;
 use \App\Http\Controllers\LanguagesController;
 use \App\Http\Controllers\PublicController;
-use \App\Http\Controllers\MediaController;
-
 use \App\Http\Controllers\PermissionGroupsController;
 use \App\Http\Controllers\PermissionsController;
 use \App\Http\Controllers\RolesController;
 use \App\Http\Controllers\UsersController;
+
 use \App\Http\Controllers\LookupController;
+use \App\Http\Controllers\MediaController;
 use \App\Http\Controllers\PageController;
+use \App\Http\Controllers\SliderController;
+use \App\Http\Controllers\SocialController;
+use \App\Http\Controllers\TestimonialController;
+use \App\Http\Controllers\BranchController;
+use \App\Http\Controllers\MessageController;
 
 use \App\Http\Controllers\ServiceController;
-use \App\Http\Controllers\TestimonialController;
 use \App\Http\Controllers\ClientController;
 use \App\Http\Controllers\PartnerController;
 use \App\Http\Controllers\QuotationController;
-use \App\Http\Controllers\MessageController;
 use \App\Http\Controllers\ApplicantController;
 use \App\Http\Controllers\TeamController;
 
@@ -59,11 +62,16 @@ Route::group(['prefix'=>'dashboard', 'middleware'=>'auth'], function (){
 
     Route::resource('lookup', LookupController::class);
     Route::get('export/lookup', [LookupController::class, 'export'])->name('lookup.export');
-
-    Route::resource('page', PageController::class);
-    Route::get('export/page', [PageController::class, 'export'])->name('page.export');
-
     Route::resource('media', MediaController::class);
+    Route::resource('page', PageController::class);
+    Route::resource('slider', SliderController::class);
+    Route::resource('social', SocialController::class);
+    Route::resource('testimonial', TestimonialController::class);
+    Route::resource('branch', BranchController::class);
+    Route::get('message', [MessageController::class, 'index'])->name('message.index');
+    Route::get('export/message', [MessageController::class, 'export'])->name('message.export');
+    Route::get('quotation', [QuotationController::class, 'index'])->name('quotation.index');
+    Route::get('export/quotation', [QuotationController::class, 'export'])->name('quotation.export');
 
     // User update data
     Route::get('user/profile', [UsersController::class, 'showUserProfile'])->name('users.showUserProfile');
@@ -88,7 +96,7 @@ Route::group(['prefix'=>'dashboard', 'middleware'=>'auth'], function (){
 //    Route::resource('partner', PartnerController::class);
 //    Route::get('partner/destroy/{client}', [PartnerController::class, 'destroy'])->name('dashboard.partner.destroy');
 //
-//    Route::resource('testimonial', TestimonialController::class);
+//
 //    Route::get('testimonial/destroy/{testimonial}', [TestimonialController::class, 'destroy'])->name('dashboard.testimonial.destroy');
 //
 //    Route::resource('team', TeamController::class);
@@ -98,7 +106,7 @@ Route::group(['prefix'=>'dashboard', 'middleware'=>'auth'], function (){
 //    Route::put('contact/update/{contact}', [ContactController::class, 'update'])->name('dashboard.contact.update');
 //
 //    Route::get('quotation', [QuotationController::class, 'index'])->name('dashboard.quotation.index');
-//    Route::get('message', [MessageController::class, 'index'])->name('dashboard.message.index');
+//
 //    Route::get('applicant', [ApplicantController::class, 'index'])->name('dashboard.applicant.index');
 });
 

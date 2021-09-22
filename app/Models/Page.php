@@ -15,7 +15,6 @@ class Page extends Model
      * @var array
      */
     protected $fillable = [
-        'uuid',
         'ordering',
         'title',
         'details',

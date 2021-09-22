@@ -15,6 +15,7 @@ class CreateQuotationsTable extends Migration
     {
         Schema::create('quotations', function (Blueprint $table) {
             $table->id('id');
+            $table->uuid('uuid');
             $table->string('bname');
             $table->string('name');
             $table->string('email');

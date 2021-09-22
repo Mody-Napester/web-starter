@@ -15,12 +15,16 @@ class CreateTestimonialsTable extends Migration
     {
         Schema::create('testimonials', function (Blueprint $table) {
             $table->id('id');
+            $table->uuid('uuid');
             $table->integer('ordering')->nullable();
             $table->text('name');
             $table->text('work');
             $table->text('title');
             $table->text('details');
             $table->string('image');
+            $table->boolean('is_active')->default(1);
+            $table->integer('created_by')->unsigned();
+            $table->integer('updated_by')->nullable()->unsigned();
             $table->timestamps();
         });
     }

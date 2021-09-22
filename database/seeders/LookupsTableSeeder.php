@@ -18,7 +18,8 @@ class LookupsTableSeeder extends Seeder
         // 'uuid','parent_id','key','name','is_active','created_by','updated_by',
 
         $lookups = [
-            ['name' => ['en' => 'file_type', 'ar' => 'file_type'], 'child' => [['name' => ['en' => 'image', 'ar' => 'image']], ['name' => ['en' => 'video', 'ar' => 'video']], ['name' => ['en' => 'text', 'ar' => 'text']]]]
+            ['name' => ['en' => 'file_type', 'ar' => 'file_type'], 'child' => [['name' => ['en' => 'image', 'ar' => 'image']], ['name' => ['en' => 'video', 'ar' => 'video']], ['name' => ['en' => 'text', 'ar' => 'text']]]],
+            ['name' => ['en' => 'providers', 'ar' => 'providers'], 'child' => [['name' => ['en' => 'facebook', 'ar' => 'facebook']], ['name' => ['en' => 'linkedin', 'ar' => 'linkedin']], ['name' => ['en' => 'twitter', 'ar' => 'twitter'], ['name' => ['en' => 'youtube', 'ar' => 'youtube']]]]],
         ];
 
         foreach ($lookups as $lookup){

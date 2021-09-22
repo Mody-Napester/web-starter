@@ -15,6 +15,10 @@ class CreateSettingsTable extends Migration
     {
         Schema::create('settings', function (Blueprint $table) {
             $table->id();
+            $table->text('logos')->nullable();
+            $table->text('name')->nullable();
+            $table->text('slogan')->nullable();
+            $table->integer('lookup_language_id')->nullable(); // default
             $table->timestamps();
         });
     }

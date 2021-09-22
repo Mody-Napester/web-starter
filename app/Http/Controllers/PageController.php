@@ -8,12 +8,6 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class PageController extends Controller
 {
-    // Export Resource
-    public function export()
-    {
-//        return Excel::download(new PagesExport(), 'page-'. time() . '-' . date('d-m-Y') .'.xlsx');
-    }
-
     /**
      * Display a listing of the resource.
      *
@@ -22,7 +16,7 @@ class PageController extends Controller
     public function index()
     {
         // Check Authority
-        if (!check_authority('list.page')){
+        if (!check_authority('index.page')){
             return redirect('/');
         }
 
@@ -38,7 +32,7 @@ class PageController extends Controller
     public function create()
     {
         // Check Authority
-        if (!check_authority('add.page')){
+        if (!check_authority('create.page')){
             return redirect('/');
         }
 
@@ -54,52 +48,46 @@ class PageController extends Controller
     public function store(Request $request)
     {
         // Check Authority
-        if (!check_authority('add.page')){
+        if (!check_authority('create.page')){
             return redirect('/');
         }
 
         // Validation
         $rules = [
-            'parent_id' => 'required',
+            'banner' => 'required',
+            'image' => 'required',
             'is_active' => 'required',
         ];
 
-        foreach (langs("short_name") as $lang) {
-            $rules['name_' . $lang] = 'required|unique:page,name';
+        foreach (langs('short_name') as $lang) {
+            $rules['title_' . $lang] = 'required';
+            $rules['details_' . $lang] = 'required';
         }
 
         $request->validate($rules);
 
         // Code
-        $name = [];
+        $title = [];
+        $details = [];
 
-        foreach (langs("short_name") as $lang) {
-            $name[$lang] = $request->input('name_' . $lang);
+        foreach (langs('short_name') as $lang) {
+            $title[$lang] = $request->input('title_' . $lang);
+            $details[$lang] = $request->input('details_' . $lang);
         }
 
-        $exists = Page::where('key', Str::slug($name['en'], '_'))->first();
-
-        if($exists){
-            return back()->with('message', [
-                'type' => 'danger',
-                'text' => 'Sorry!, Already exists.'
-            ]);
-        }
-
-        $parent = (Page::getOneBy('uuid', $request->parent_id))? Page::getOneBy('uuid', $request->parent_id)->id : 0;
         $resource = Page::create([
-            'parent_id' => $parent,
-            'key' => Str::slug($name['en'], '_'),
-            'name' => json_encode($name),
+            'ordering' => $request->ordering,
+            'title' => json_encode($title),
+            'details' => json_encode($details),
+            'banner' => $request->banner,
+            'image' => $request->image,
             'is_active' => ($request->is_active == 1)? 1 : 0,
             'created_by' => auth()->user()->id,
         ]);
 
-        session()->put('parent', $parent);
-
         // Return
         if($resource){
-            return back()->with('message', [
+            return redirect(route('page.index'))->with('message', [
                 'type' => 'success',
                 'text' => trans('messages.Created_successfully')
             ]);
@@ -136,7 +124,6 @@ class PageController extends Controller
         }
 
         $data['resource'] = $page;
-        $data['parents'] = Page::getAllBy('parent_id', 0);
         return view('@dashboard.page.edit', $data);
     }
 
@@ -160,34 +147,38 @@ class PageController extends Controller
         if(!$data['resource']){
             return redirect()->back()->with('message',[
                 'type'=>'danger',
-                'text'=>'Sorry! not exists.'
+                'text'=> trans('messages.Sorry_resource_not_exists.')
             ]);
         }
 
         $rules = [
-            'parent_id' => 'required',
+            'banner' => 'required',
+            'image' => 'required',
             'is_active' => 'required',
         ];
 
-        foreach (langs("short_name") as $lang) {
-            $rules['name_' . $lang] = 'required';
-        }
-
-        // Code
-        $name = [];
-
-        foreach (langs("short_name") as $lang) {
-            $name[$lang] = $request->input('name_' . $lang);
+        foreach (langs('short_name') as $lang) {
+            $rules['title_' . $lang] = 'required';
+            $rules['details_' . $lang] = 'required';
         }
 
         $request->validate($rules);
 
-        $parent = (Page::getOneBy('uuid', $request->parent_id))? Page::getOneBy('uuid', $request->parent_id)->id : 0;
+        // Code
+        $title = [];
+        $details = [];
+
+        foreach (langs('short_name') as $lang) {
+            $title[$lang] = $request->input('title_' . $lang);
+            $details[$lang] = $request->input('details_' . $lang);
+        }
 
         $resource = $data['resource']->update([
-            'parent_id' => $parent,
-            'key' => Str::slug($name['en'], '_'),
-            'name' => json_encode($name),
+            'ordering' => $request->ordering,
+            'title' => json_encode($title),
+            'details' => json_encode($details),
+            'banner' => $request->banner,
+            'image' => $request->image,
             'is_active' => ($request->is_active == 1)? 1 : 0,
             'updated_by' => auth()->user()->id,
         ]);
@@ -222,29 +213,13 @@ class PageController extends Controller
         $data['resource'] = $page;
 
         if($data['resource']){
-//            $exists_in_customers = Customer::where('page_country_id', $data['resource']->id)
-//                ->orWhere('page_city_id', $data['resource']->id)
-//                ->orWhere('page_district_id', $data['resource']->id)
-//                ->orWhere('page_sales_man_id', $data['resource']->id)
-//                ->orWhere('page_customer_type_id', $data['resource']->id)
-//                ->count();
 
+            $data['resource']->delete();
 
-//            if($exists_in_customers == 0 && $exists_in_form_support == 0)
-            if($data['resource'])
-            {
-                $data['resource']->delete();
-                return redirect()->back()->with('message',[
-                    'type'=>'success',
-                    'text'=> trans('messages.Deleted_Successfully')
-                ]);
-            }else{
-                return redirect()->back()->with('message',[
-                    'type'=>'danger',
-                    'text'=> trans('messages.Sorry_it_exists_the_system')
-                ]);
-            }
-
+            return redirect()->back()->with('message',[
+                'type'=>'success',
+                'text'=> trans('messages.Deleted_Successfully')
+            ]);
         }else{
             return redirect()->back()->with('message',[
                 'type'=>'danger',

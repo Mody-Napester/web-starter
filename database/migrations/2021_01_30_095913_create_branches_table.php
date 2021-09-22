@@ -14,7 +14,8 @@ class CreateBranchesTable extends Migration
     public function up()
     {
         Schema::create('branches', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id('id');
+            $table->uuid('uuid');
             $table->text('name');
             $table->text('address');
             $table->string('telephone');
@@ -23,6 +24,9 @@ class CreateBranchesTable extends Migration
             $table->string('email');
             $table->text('map_link');
             $table->boolean('is_default')->default(0);
+            $table->boolean('is_active')->default(1);
+            $table->integer('created_by')->unsigned();
+            $table->integer('updated_by')->nullable()->unsigned();
             $table->timestamps();
         });
     }

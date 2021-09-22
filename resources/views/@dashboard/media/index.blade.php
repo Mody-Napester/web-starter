@@ -40,7 +40,7 @@
                             <a href="{{ route('media.destroy' , [$resource->id]) }}" class="btn btn-danger btn-xs waves-effect waves-light confirm-delete"><i class="mdi mdi-trash-can-outline"></i></a>
                         </div>
 
-                        <div class="bg-light" style="height: 200px;text-align: center;vertical-align: middle;display: table-cell;width: 100%;">
+                        <div class="bg-light" style="height: 100px;text-align: center;vertical-align: middle;display: table-cell;width: 100%;">
                             <img src="{{ url('assets_public/media/'. $resource->file) }}" style="max-height: 100%;max-width: 100%;margin: auto;" alt="product-pic" class="">
                         </div>
 
