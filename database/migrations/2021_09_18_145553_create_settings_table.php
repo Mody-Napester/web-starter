@@ -18,7 +18,8 @@ class CreateSettingsTable extends Migration
             $table->text('logos')->nullable();
             $table->text('name')->nullable();
             $table->text('slogan')->nullable();
-            $table->integer('lookup_language_id')->nullable(); // default
+            $table->integer('default_language_id')->nullable(); //
+            $table->integer('default_theme_id')->nullable(); //
             $table->timestamps();
         });
     }

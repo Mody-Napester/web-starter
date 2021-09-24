@@ -13,7 +13,7 @@
         <div class="collapse" id="sidebarSettings">
             <ul class="nav-second-level">
                 <li>
-                    <a href="-"><i class="fa fa-fw fa-angle-right"></i> Global</a>
+                    <a href="{{ route('setting.edit') }}"><i class="fa fa-fw fa-angle-right"></i> Global</a>
                 </li>
                 <li>
                     <a href="{{ route('lookup.index') }}"><i class="fa fa-fw fa-angle-right"></i> Lookups</a>

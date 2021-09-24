@@ -19,6 +19,7 @@ use \App\Http\Controllers\SocialController;
 use \App\Http\Controllers\TestimonialController;
 use \App\Http\Controllers\BranchController;
 use \App\Http\Controllers\MessageController;
+use \App\Http\Controllers\SettingController;
 
 use \App\Http\Controllers\ServiceController;
 use \App\Http\Controllers\ClientController;
@@ -72,6 +73,8 @@ Route::group(['prefix'=>'dashboard', 'middleware'=>'auth'], function (){
     Route::get('export/message', [MessageController::class, 'export'])->name('message.export');
     Route::get('quotation', [QuotationController::class, 'index'])->name('quotation.index');
     Route::get('export/quotation', [QuotationController::class, 'export'])->name('quotation.export');
+    Route::get('setting/edit', [SettingController::class, 'edit'])->name('setting.edit');
+    Route::put('setting/edit', [SettingController::class, 'update'])->name('setting.update');
 
     // User update data
     Route::get('user/profile', [UsersController::class, 'showUserProfile'])->name('users.showUserProfile');

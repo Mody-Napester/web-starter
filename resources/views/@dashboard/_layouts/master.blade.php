@@ -35,12 +35,15 @@
 {{--    <link href="{{ url('assets_dashboard/css/config/default/bootstrap-dark.min.css') }}" rel="stylesheet" type="text/css" id="bs-dark-stylesheet" />--}}
 {{--    <link href="{{ url('assets_dashboard/css/config/default/app-dark.min.css') }}" rel="stylesheet" type="text/css" id="app-dark-stylesheet" />--}}
 
-{{--    <link href="{{ url('assets_dashboard/css/config/default/bootstrap.min.css') }}" rel="stylesheet" type="text/css"/>--}}
-{{--    <link href="{{ url('assets_dashboard/css/config/default/app.min.css') }}" rel="stylesheet" type="text/css"/>--}}
-
-
+    @if($general_settings->default_theme_id == 1)
     <link href="{{ url('assets_dashboard/css/config/default/bootstrap-dark.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ url('assets_dashboard/css/config/default/app-dark.min.css') }}" rel="stylesheet" type="text/css"/>
+    @endif
+
+    @if($general_settings->default_theme_id == 2)
+        <link href="{{ url('assets_dashboard/css/config/default/bootstrap.min.css') }}" rel="stylesheet" type="text/css"/>
+        <link href="{{ url('assets_dashboard/css/config/default/app.min.css') }}" rel="stylesheet" type="text/css"/>
+    @endif
 
     <!-- icons -->
     <link href="{{ url('assets_dashboard/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
@@ -409,23 +412,23 @@
 
             <!-- LOGO -->
             <div class="logo-box">
-                <a href="index.html" class="logo logo-dark text-center">
+                <a href="{{ route('dashboard.home.index') }}" class="logo logo-dark text-center">
                 <span class="logo-sm">
-                    <img src="assets_dashboard/images/logo-sm.png" alt="" height="22">
-                    <!-- <span class="logo-lg-text-light">UBold</span> -->
+                    <img src="{{ url('assets_public/media/'. getFromJson($general_settings->logos, lang())) }}" alt="{{ getFromJson($general_settings->name, lang()) }}" height="40">
+                    <!-- <span class="logo-lg-text-light">{{ getFromJson($general_settings->name, lang()) }}</span> -->
                 </span>
-                    <span class="logo-lg">
-                    <img src="assets_dashboard/images/logo-dark.png" alt="" height="20">
-                        <!-- <span class="logo-lg-text-light">U</span> -->
+                <span class="logo-lg">
+                    <img src="{{ url('assets_public/media/'. getFromJson($general_settings->logos, lang())) }}" alt="{{ getFromJson($general_settings->name, lang()) }}" height="40">
+                        <!-- <span class="logo-lg-text-light">{{ substr(getFromJson($general_settings->name, lang()), 0, 1) }}</span> -->
                 </span>
                 </a>
 
-                <a href="index.html" class="logo logo-light text-center">
+                <a href="{{ route('dashboard.home.index') }}" class="logo logo-light text-center">
                 <span class="logo-sm">
-                    <img src="assets_dashboard/images/logo-sm.png" alt="" height="22">
+                    <img src="{{ url('assets_public/media/'. getFromJson($general_settings->logos, lang())) }}" alt="{{ getFromJson($general_settings->name, lang()) }}" height="40">
                 </span>
                     <span class="logo-lg">
-                    <img src="assets_dashboard/images/logo-light.png" alt="" height="20">
+                    <img src="{{ url('assets_public/media/'. getFromJson($general_settings->logos, lang())) }}" alt="{{ getFromJson($general_settings->name, lang()) }}" height="40">
                 </span>
                 </a>
             </div>
